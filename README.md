@@ -58,4 +58,4 @@ mvn spring-boot:run
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT - veja o arquivo [LICENSE.md](LICENSE.md) para mais detalhes. 
+Este projeto está sob a licença MIT - veja o arquivo [LICENSE](https://github.com/LirielC/portal-faculdade/blob/main/LICENSE) para mais detalhes. 
