@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Portal do Aluno</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Portal do Aluno</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/aluno/dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/aluno/disciplinas">Disciplinas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/aluno/perfil">Perfil</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <span class="navbar-text me-3">
+                        <i class="bi bi-person-circle"></i>
+                        <span th:text="${usuario.nome}">Nome do Aluno</span>
+                    </span>
+                    <form th:action="@{/logout}" method="post">
+                        <button class="btn btn-outline-light" type="submit">Sair</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <div class="container my-4">
+        <!-- Mensagens de Alerta -->
+        <div th:if="${mensagem}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${mensagem}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${erro}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Cards Informativos -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-book fs-1 text-primary mb-2"></i>
+                        <h5 class="card-title">Disciplinas Ativas</h5>
+                        <p class="card-text fs-4" th:text="${matriculas.size()}">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-calendar-check fs-1 text-success mb-2"></i>
+                        <h5 class="card-title">Frequência Média</h5>
+                        <p class="card-text fs-4" th:text="${#numbers.formatDecimal(frequenciaMedia, 1, 1)} + '%'">0%</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-graph-up fs-1 text-info mb-2"></i>
+                        <h5 class="card-title">CR</h5>
+                        <p class="card-text fs-4" th:text="${#numbers.formatDecimal(cr, 1, 2)}">0.00</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-mortarboard fs-1 text-warning mb-2"></i>
+                        <h5 class="card-title">Disciplinas Concluídas</h5>
+                        <p class="card-text fs-4" th:text="${historico.size()}">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Próximas Aulas -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-calendar3"></i> Próximas Aulas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${proximasAulas.empty}" class="text-center text-muted">
+                            <p>Nenhuma aula programada</p>
+                        </div>
+                        <div th:each="aula : ${proximasAulas}" class="mb-3 border-bottom pb-2">
+                            <h6 th:text="${aula.nome}" class="mb-1">Nome da Disciplina</h6>
+                            <p class="mb-1">
+                                <i class="bi bi-person-video3"></i>
+                                <span th:text="${aula.professor?.nome}">Professor</span>
+                            </p>
+                            <p class="mb-1">
+                                <i class="bi bi-geo-alt"></i>
+                                <span th:text="${aula.sala}">Sala</span>
+                            </p>
+                            <p class="mb-0 text-muted">
+                                <i class="bi bi-clock"></i>
+                                <span th:text="${#temporals.format(aula.horarioInicio, 'HH:mm')}">00:00</span> - 
+                                <span th:text="${#temporals.format(aula.horarioFim, 'HH:mm')}">00:00</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Últimas Notas -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-card-checklist"></i> Últimas Notas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${matriculas.empty}" class="text-center text-muted">
+                            <p>Nenhuma nota registrada</p>
+                        </div>
+                        <div th:each="matricula : ${matriculas}" class="mb-3 border-bottom pb-2">
+                            <h6 th:text="${matricula.disciplina.nome}" class="mb-2">Nome da Disciplina</h6>
+                            <div class="row">
+                                <div class="col">
+                                    <small class="text-muted">Nota 1:</small>
+                                    <p th:text="${matricula.nota1 != null ? #numbers.formatDecimal(matricula.nota1, 1, 1) : '-'}" 
+                                       class="mb-0">0.0</p>
+                                </div>
+                                <div class="col">
+                                    <small class="text-muted">Nota 2:</small>
+                                    <p th:text="${matricula.nota2 != null ? #numbers.formatDecimal(matricula.nota2, 1, 1) : '-'}" 
+                                       class="mb-0">0.0</p>
+                                </div>
+                                <div class="col">
+                                    <small class="text-muted">Média:</small>
+                                    <p th:text="${matricula.notaFinal != null ? #numbers.formatDecimal(matricula.notaFinal, 1, 1) : '-'}" 
+                                       class="mb-0">0.0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Histórico Resumido -->
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-clock-history"></i> Histórico Resumido
+                </h5>
+            </div>
+            <div class="card-body">
+                <div th:if="${historico.empty}" class="text-center text-muted">
+                    <p>Nenhuma disciplina concluída</p>
+                </div>
+                <div class="table-responsive">
+                    <table th:if="${!historico.empty}" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Disciplina</th>
+                                <th>Semestre</th>
+                                <th>Nota Final</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="h : ${historico}">
+                                <td th:text="${h.disciplina.nome}">Disciplina</td>
+                                <td th:text="${h.semestreAno}">2024.1</td>
+                                <td th:text="${#numbers.formatDecimal(h.notaFinal, 1, 1)}">0.0</td>
+                                <td>
+                                    <span th:if="${h.status == 'APROVADO'}" class="badge bg-success">Aprovado</span>
+                                    <span th:if="${h.status == 'REPROVADO'}" class="badge bg-danger">Reprovado</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

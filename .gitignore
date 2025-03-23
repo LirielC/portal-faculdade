@@ -1,0 +1,29 @@
+# Arquivos compilados
+target/
+*.class
+*.jar
+
+# Arquivos de IDE
+.idea/
+.vscode/
+*.iml
+.project
+.classpath
+.settings/
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Arquivos de log
+*.log
+
+# Arquivos de ambiente
+.env
+application.properties
+application-dev.properties
+application-prod.properties
+
+# Arquivos temporários
+*.tmp
+*.temp 

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendário de Aulas - Portal do Aluno</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 w-full border-b bg-indigo-600">
+        <div class="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center gap-4">
+                <i data-lucide="graduation-cap" class="h-8 w-8 text-white"></i>
+                <h1 class="text-2xl font-bold text-white">Portal do Aluno</h1>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <nav class="hidden md:flex items-center space-x-4">
+                    <a href="/" class="text-white/80 hover:text-white text-base font-medium transition-colors flex items-center gap-2">
+                        <i data-lucide="home" class="h-5 w-5"></i>
+                        <span>Home</span>
+                    </a>
+
+                    <a href="/dashboard" class="text-white/80 hover:text-white text-base font-medium transition-colors flex items-center gap-2">
+                        <i data-lucide="layout-dashboard" class="h-5 w-5"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <a href="/aluno/disciplinas" class="text-white/80 hover:text-white text-base font-medium transition-colors flex items-center gap-2">
+                        <i data-lucide="book-open" class="h-5 w-5"></i>
+                        <span>Minhas Disciplinas</span>
+                    </a>
+
+                    <a href="/aluno/historico" class="text-white/80 hover:text-white text-base font-medium transition-colors flex items-center gap-2">
+                        <i data-lucide="clock" class="h-5 w-5"></i>
+                        <span>Histórico</span>
+                    </a>
+                </nav>
+
+                <button class="text-white hover:bg-indigo-700 rounded-md p-2.5 relative">
+                    <i data-lucide="bell" class="h-6 w-6"></i>
+                    <span class="sr-only">Notificações</span>
+                    <span class="absolute top-2 right-2 h-2.5 w-2.5 bg-red-500 rounded-full"></span>
+                </button>
+
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="h-10 w-10 border-2 border-white rounded-full bg-indigo-800 text-white flex items-center justify-center text-base" th:with="nomes=${#strings.arraySplit(usuario.nome, ' ')}" th:text="${#strings.substring(nomes[0], 0, 1)} + ${#strings.substring(nomes[#arrays.length(nomes) - 1], 0, 1)}">
+                            MS
+                        </div>
+                        <span class="text-base font-medium text-white hidden md:inline-block" th:text="${usuario.nome}">Maria Santos</span>
+                    </div>
+
+                    <a href="/logout" class="bg-white text-indigo-600 px-5 py-2.5 rounded-md text-base font-medium hover:bg-slate-50 flex items-center gap-2">
+                        <i data-lucide="log-out" class="h-5 w-5"></i>
+                        <span>Sair</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="calendar-header">
+                <h1 class="calendar-title">Calendário Acadêmico</h1>
+                <div class="calendar-nav">
+                    <button onclick="previousMonth()">
+                        <i class="fas fa-chevron-left"></i>
+                        Anterior
+                    </button>
+                    <span id="current-month" class="h5 mb-0">Março 2024</span>
+                    <button onclick="nextMonth()">
+                        Próximo
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="calendar-grid">
+                <div class="calendar-weekdays">
+                    <div class="weekday">Dom</div>
+                    <div class="weekday">Seg</div>
+                    <div class="weekday">Ter</div>
+                    <div class="weekday">Qua</div>
+                    <div class="weekday">Qui</div>
+                    <div class="weekday">Sex</div>
+                    <div class="weekday">Sáb</div>
+                </div>
+
+                <div class="calendar-days" id="calendar-days">
+                    <!-- Dias serão preenchidos via JavaScript -->
+                </div>
+            </div>
+
+            <div class="events-list">
+                <h2 class="h4 mb-3">Próximos Eventos</h2>
+                <!-- Exemplo de evento -->
+                <div class="event-item">
+                    <div class="event-date">
+                        <div>MAR</div>
+                        <div>25</div>
+                    </div>
+                    <div class="event-info">
+                        <h4>Prova: Programação Web</h4>
+                        <p>09:00 - 11:00 • Sala 305</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Função para gerar o calendário
+        function generateCalendar(year, month) {
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startingDay = firstDay.getDay();
+            const totalDays = lastDay.getDate();
+            
+            const calendarDays = document.getElementById('calendar-days');
+            calendarDays.innerHTML = '';
+
+            // Adicionar dias vazios no início
+            for (let i = 0; i < startingDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day';
+                calendarDays.appendChild(emptyDay);
+            }
+
+            // Adicionar os dias do mês
+            const today = new Date();
+            for (let day = 1; day <= totalDays; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                
+                // Verificar se é hoje
+                if (year === today.getFullYear() && 
+                    month === today.getMonth() && 
+                    day === today.getDate()) {
+                    dayElement.classList.add('today');
+                }
+
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'day-number';
+                dayNumber.textContent = day;
+                dayElement.appendChild(dayNumber);
+
+                calendarDays.appendChild(dayElement);
+            }
+        }
+
+        // Estado atual do calendário
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+
+        // Atualizar o mês exibido
+        function updateCurrentMonth() {
+            const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                          'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            document.getElementById('current-month').textContent = `${months[currentMonth]} ${currentYear}`;
+        }
+
+        // Navegar para o mês anterior
+        function previousMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            updateCurrentMonth();
+            generateCalendar(currentYear, currentMonth);
+        }
+
+        // Navegar para o próximo mês
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            updateCurrentMonth();
+            generateCalendar(currentYear, currentMonth);
+        }
+
+        // Inicializar o calendário
+        updateCurrentMonth();
+        generateCalendar(currentYear, currentMonth);
+
+        // Inicializa os ícones do Lucide
+        lucide.createIcons();
+    </script>
+</body>
+</html> 

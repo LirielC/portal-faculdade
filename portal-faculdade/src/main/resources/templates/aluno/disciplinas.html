@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Minhas Disciplinas - Portal da Faculdade</title>
+    
+    <!-- Preload dos recursos críticos -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style" crossorigin="anonymous">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style" crossorigin="anonymous">
+    <link rel="preload" th:href="@{/static/css/disciplinas.css}" as="style">
+    
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/disciplinas.css}">
+    
+    <!-- Inline critical CSS -->
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-dark: #3730a3;
+            --secondary-color: #6366f1;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #0ea5e9;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .min-h-screen {
+            min-height: 100vh;
+        }
+
+        .bg-slate-50 {
+            background-color: #f8fafc;
+        }
+
+        .bg-indigo-600 {
+            background-color: var(--primary-color);
+        }
+
+        .text-white {
+            color: white;
+        }
+
+        .text-white\/80 {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .hover\:text-white:hover {
+            color: white;
+        }
+
+        .bg-indigo-700 {
+            background-color: #4338ca;
+        }
+
+        .hover\:bg-indigo-700:hover {
+            background-color: #4338ca;
+        }
+
+        .rounded-md {
+            border-radius: 0.375rem;
+        }
+
+        .transition-colors {
+            transition: color 0.2s ease;
+        }
+
+        .shadow-md {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .navbar-brand {
+            color: white !important;
+            font-weight: 600;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .nav-link.active {
+            color: white !important;
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .navbar-nav {
+            margin-left: 1rem;
+        }
+
+        .navbar-collapse {
+            justify-content: space-between;
+        }
+
+        .professor-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .professor-name {
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        .professor-title {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .horario-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .horario-dia {
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        .horario-periodo {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .btn-logout {
+            color: white !important;
+            background-color: rgba(239, 68, 68, 0.9);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-logout:hover {
+            background-color: rgb(239, 68, 68);
+            transform: translateY(-1px);
+        }
+
+        .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .main-content {
+            margin-top: 5rem;
+            padding: 2rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .badge-outline {
+            background-color: #f1f5f9;
+            color: #475569;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background-color: #f8fafc;
+            color: #1e293b;
+            font-weight: 600;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-size: 0.875rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #4338ca;
+        }
+
+        .btn-destructive {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .btn-destructive:hover {
+            background-color: #dc2626;
+        }
+
+        .btn-warning {
+            background-color: #f59e0b;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #d97706;
+        }
+
+        .btn-info {
+            background-color: #0ea5e9;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background-color: #0284c7;
+        }
+
+        .tabs {
+            background-color: #eef2ff;
+            padding: 0.25rem;
+            border-radius: 0.5rem;
+            display: inline-flex;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #4f46e5;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab.active {
+            background-color: #4f46e5;
+            color: white;
+        }
+
+        footer {
+            background-color: #1e293b;
+            color: #94a3b8;
+            padding: 1rem;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stats-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-label {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title i {
+            font-size: 1.25rem;
+            color: var(--primary-color);
+        }
+
+        .section-title .badge {
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+        }
+
+        .table {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .table th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            padding: 1rem;
+        }
+
+        .table td {
+            padding: 1rem;
+            vertical-align: middle;
+            color: #334155;
+        }
+
+        .table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            font-size: 0.75rem;
+        }
+
+        .badge-outline {
+            background-color: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+            transform: translateY(-1px);
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-warning:hover {
+            background-color: #d97706;
+            transform: translateY(-1px);
+        }
+
+        .btn-info {
+            background-color: var(--info-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-info:hover {
+            background-color: #0284c7;
+            transform: translateY(-1px);
+        }
+
+        .semester-info {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .semester-info h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .semester-info p {
+            opacity: 0.9;
+            margin-bottom: 0;
+        }
+
+        .tabs {
+            background-color: white;
+            padding: 0.5rem;
+            border-radius: 0.75rem;
+            display: inline-flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            background: none;
+        }
+
+        .tab:hover {
+            background-color: #f1f5f9;
+            color: var(--primary-color);
+        }
+
+        .tab.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .matricula-form {
+            display: inline-block;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            font-size: 0.75rem;
+        }
+
+        .status-active {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .status-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+    <script>
+        function showTab(tabName) {
+            // Esconde todas as tabs
+            var tabs = document.getElementsByClassName('tab-content');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].style.display = 'none';
+            }
+            
+            // Remove a classe active de todos os botões
+            var buttons = document.getElementsByClassName('tab');
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+            
+            // Mostra a tab selecionada
+            document.getElementById('tab-' + tabName).style.display = 'block';
+            
+            // Adiciona a classe active no botão selecionado
+            event.currentTarget.classList.add('active');
+        }
+
+        // Quando a página carregar, mostra a primeira tab
+        document.addEventListener('DOMContentLoaded', function() {
+            // Se houver erro, mostra a tab de disciplinas disponíveis
+            if (document.querySelector('.alert-danger')) {
+                showTab('disponiveis');
+            } else {
+                // Caso contrário, mostra a tab de disciplinas matriculadas
+                showTab('matriculadas');
+            }
+        });
+
+        function confirmarTrocaDisciplina(form) {
+            const disciplinaId = form.dataset.disciplinaId,
+                  disciplinaNome = form.dataset.disciplinaNome,
+                  novaDisciplinaId = form.novaDisciplinaId.value,
+                  novaDisciplinaNome = form.novaDisciplinaId.options[form.novaDisciplinaId.selectedIndex].text;
+            
+            return confirm(`Deseja realmente trocar a disciplina "${disciplinaNome}" pela disciplina "${novaDisciplinaNome}"?`);
+        }
+
+        function confirmarCancelamento(disciplinaId, disciplinaNome) {
+            return confirm(`Deseja realmente cancelar a matrícula na disciplina "${disciplinaNome}"?`);
+        }
+    </script>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50">
+    <!-- Barra de Navegação -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/aluno/perfil">
+                <i class="fas fa-graduation-cap me-2"></i>
+                Portal da Faculdade
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/aluno/perfil">
+                            <i class="fas fa-user me-1"></i> Perfil
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/aluno/disciplinas">
+                            <i class="fas fa-book me-1"></i> Minhas Disciplinas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/aluno/historico">
+                            <i class="fas fa-history me-1"></i> Histórico
+                        </a>
+                    </li>
+                </ul>
+                <form th:action="@{/logout}" method="post" class="d-flex">
+                    <button type="submit" class="btn-logout">
+                        <i class="fas fa-sign-out-alt me-1"></i> Sair
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Mensagens de Feedback -->
+        <div th:if="${mensagem}" class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${mensagem}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${erro}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- Cabeçalho da Página -->
+        <div class="section-title">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-book me-2"></i>
+                <span>Minhas Disciplinas</span>
+            </div>
+            <span class="badge bg-success">Semestre 2025.1</span>
+        </div>
+
+        <!-- Informações do Semestre -->
+        <div class="semester-info">
+            <h3><i class="fas fa-calendar-alt me-2"></i>Semestre 2025.1</h3>
+            <p>Período de matrículas: 01/01/2025 a 15/01/2025</p>
+        </div>
+
+        <!-- Cards de Estatísticas -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-4">
+                <div class="stats-card text-center">
+                    <div class="stats-icon mx-auto">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="stats-number" th:text="${#lists.size(matriculas)}">0</div>
+                    <div class="stats-label">Disciplinas Matriculadas</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="stats-card text-center">
+                    <div class="stats-icon mx-auto">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stats-number" th:text="${#lists.size(disciplinasDisponiveis)}">10</div>
+                    <div class="stats-label">Disciplinas Disponíveis</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="stats-card text-center">
+                    <div class="stats-icon mx-auto">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="stats-number">6</div>
+                    <div class="stats-label">Máximo de Disciplinas</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('matriculadas')" data-tab="matriculadas">
+                <i class="fas fa-book me-2"></i>Disciplinas Matriculadas
+            </button>
+            <button class="tab" onclick="showTab('disponiveis')" data-tab="disponiveis">
+                <i class="fas fa-plus-circle me-2"></i>Disciplinas Disponíveis
+            </button>
+            <a href="/aluno/agenda" class="tab">
+                <i class="fas fa-calendar me-2"></i>Calendário de Aulas
+            </a>
+        </div>
+
+        <!-- Tab Disciplinas Matriculadas -->
+        <div id="tab-matriculadas" class="tab-content">
+            <div th:if="${#lists.isEmpty(matriculas)}" class="alert alert-info">
+                Você não está matriculado em nenhuma disciplina.
+            </div>
+            <div th:if="${not #lists.isEmpty(matriculas)}" class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>CÓDIGO</th>
+                            <th>DISCIPLINA</th>
+                            <th>PROFESSOR</th>
+                            <th>SALA</th>
+                            <th>HORÁRIO</th>
+                            <th>STATUS</th>
+                            <th class="text-center">NOTA 1</th>
+                            <th class="text-center">NOTA 2</th>
+                            <th class="text-center">NOTA FINAL</th>
+                            <th class="text-center">AÇÕES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="matricula : ${matriculas}">
+                            <td>
+                                <span class="badge badge-outline">
+                                    #<span th:text="${matricula.disciplina.id}"></span>
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-book text-primary me-2"></i>
+                                    <div>
+                                        <strong th:text="${matricula.disciplina.nome}">Nome da Disciplina</strong>
+                                        <br>
+                                        <small class="text-muted" th:text="${matricula.disciplina.cargaHoraria + 'h'}">60h</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-user-tie text-primary me-2"></i>
+                                    <div class="professor-info">
+                                        <span class="professor-name" th:text="${matricula.disciplina.professor?.nome ?: 'Não atribuído'}">Professor</span>
+                                        <span class="professor-title" th:text="${matricula.disciplina.professor?.titulacao ?: 'Titulação não informada'}">Titulação</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-door-open text-primary me-2"></i>
+                                    <span th:text="${matricula.disciplina.sala}">Sala</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-clock text-primary me-2"></i>
+                                    <div class="horario-info">
+                                        <span class="horario-dia" th:text="${matricula.disciplina.diaSemana}">Segunda-feira</span>
+                                        <span class="horario-periodo">
+                                            <span th:text="${#temporals.format(matricula.disciplina.horarioInicio, 'HH:mm')}">08:00</span> - 
+                                            <span th:text="${#temporals.format(matricula.disciplina.horarioFim, 'HH:mm')}">10:00</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge status-active">MATRICULADO</span>
+                            </td>
+                            <td class="text-center" th:text="${matricula.nota1 ?: '-'}">-</td>
+                            <td class="text-center" th:text="${matricula.nota2 ?: '-'}">-</td>
+                            <td class="text-center" th:text="${matricula.notaFinal ?: '-'}">-</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <form th:action="@{/aluno/cancelar/{id}(id=${matricula.disciplina.id})}" 
+                                          method="post" 
+                                          th:onsubmit="return confirmarCancelamento([[${matricula.disciplina.id}]], [[${matricula.disciplina.nome}]]);">
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-times me-1"></i>
+                                            Cancelar
+                                        </button>
+                                    </form>
+                                    <button type="button" class="btn btn-warning btn-sm" 
+                                            data-bs-toggle="modal" 
+                                            th:data-bs-target="'#trocarModal' + ${matricula.disciplina.id}">
+                                        <i class="fas fa-exchange-alt me-1"></i>
+                                        Trocar
+                                    </button>
+                                    <a th:href="@{/aluno/presencas/{id}(id=${matricula.id})}" 
+                                       class="btn btn-info btn-sm">
+                                        <i class="fas fa-calendar-check me-1"></i>
+                                        Presenças
+                                    </a>
+                                </div>
+
+                                <!-- Modal de Troca -->
+                                <div th:id="'trocarModal' + ${matricula.disciplina.id}" class="modal fade">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Trocar Disciplina</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>Selecione a disciplina para a qual deseja trocar:</p>
+                                                <form th:action="@{/aluno/trocar}" method="post" 
+                                                      th:data-disciplina-id="${matricula.disciplina.id}"
+                                                      th:data-disciplina-nome="${matricula.disciplina.nome}"
+                                                      onsubmit="return confirmarTrocaDisciplina(this);">
+                                                    <input type="hidden" name="disciplinaAtualId" th:value="${matricula.disciplina.id}">
+                                                    <select name="novaDisciplinaId" class="form-select mb-3" required>
+                                                        <option value="">Selecione uma disciplina...</option>
+                                                        <option th:each="disciplina : ${disciplinasDisponiveis}"
+                                                                th:value="${disciplina.id}"
+                                                                th:text="${disciplina.nome + ' - ' + disciplina.professor?.nome + ' - ' + disciplina.sala + ' - ' + #temporals.format(disciplina.horarioInicio, 'HH:mm') + ' às ' + #temporals.format(disciplina.horarioFim, 'HH:mm')}">
+                                                        </option>
+                                                    </select>
+                                                    <div class="text-end">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                        <button type="submit" class="btn btn-primary">Confirmar Troca</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab Disciplinas Disponíveis -->
+        <div id="tab-disponiveis" class="tab-content" style="display: none;">
+            <div th:if="${#lists.isEmpty(disciplinasDisponiveis)}" class="alert alert-info">
+                Não há disciplinas disponíveis para matrícula no momento.
+            </div>
+            <div th:if="${not #lists.isEmpty(disciplinasDisponiveis)}" class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>CÓDIGO</th>
+                            <th>DISCIPLINA</th>
+                            <th>PROFESSOR</th>
+                            <th>SALA</th>
+                            <th>HORÁRIO</th>
+                            <th>CARGA HORÁRIA</th>
+                            <th>VAGAS</th>
+                            <th class="text-center">AÇÃO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="disciplina : ${disciplinasDisponiveis}">
+                            <td>
+                                <span class="badge badge-outline">
+                                    #<span th:text="${disciplina.id}"></span>
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-book text-primary me-2"></i>
+                                    <div>
+                                        <strong th:text="${disciplina.nome}">Nome da Disciplina</strong>
+                                        <br>
+                                        <small class="text-muted" th:text="${disciplina.descricao ?: 'Sem descrição'}">Descrição</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-user-tie text-primary me-2"></i>
+                                    <div class="professor-info">
+                                        <span class="professor-name" th:text="${disciplina.professor?.nome ?: 'Não atribuído'}">Professor</span>
+                                        <span class="professor-title" th:text="${disciplina.professor?.titulacao ?: 'Titulação não informada'}">Titulação</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-door-open text-primary me-2"></i>
+                                    <span th:text="${disciplina.sala}">Sala</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-clock text-primary me-2"></i>
+                                    <div class="horario-info">
+                                        <span class="horario-dia" th:text="${disciplina.diaSemana}">Segunda-feira</span>
+                                        <span class="horario-periodo">
+                                            <span th:text="${#temporals.format(disciplina.horarioInicio, 'HH:mm')}">08:00</span> - 
+                                            <span th:text="${#temporals.format(disciplina.horarioFim, 'HH:mm')}">10:00</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-clock text-primary me-2"></i>
+                                    <span th:text="${disciplina.cargaHoraria + 'h'}">60h</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge" 
+                                      th:classappend="${#lists.size(disciplina.matriculas) < 30 ? 'status-active' : 'status-warning'}"
+                                      th:text="${#lists.size(disciplina.matriculas)} + '/30'">
+                                    15/30
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <form th:action="@{/aluno/matricular/{id}(id=${disciplina.id})}" 
+                                      method="post" 
+                                      onsubmit="return confirm('Tem certeza que deseja se matricular nesta disciplina?');">
+                                    <button type="submit" class="btn btn-primary btn-sm" 
+                                            th:disabled="${#lists.size(disciplina.matriculas) >= 30}">
+                                        <i class="fas fa-plus-circle me-1"></i>
+                                        Matricular
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto py-3 bg-dark text-white">
+        <div class="container text-center">
+            <small>© 2025 Portal da Faculdade. Todos os direitos reservados.</small>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer crossorigin="anonymous"></script>
+</body>
+</html> 

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico Acadêmico - Portal da Faculdade</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-dark: #3730a3;
+        }
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .navbar-brand {
+            color: white !important;
+            font-weight: 600;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .nav-link:hover {
+            color: white !important;
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+        .nav-link.active {
+            color: white !important;
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+        .btn-logout {
+            color: white !important;
+            background-color: rgba(239, 68, 68, 0.9);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-logout:hover {
+            background-color: rgb(239, 68, 68);
+            transform: translateY(-1px);
+        }
+        .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50">
+    <!-- Barra de Navegação -->
+    <nav class="navbar navbar-expand-lg mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="/aluno/perfil">
+                <i class="fas fa-graduation-cap me-2"></i>
+                Portal da Faculdade
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/aluno/perfil">
+                            <i class="fas fa-user me-1"></i> Perfil
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/aluno/disciplinas">
+                            <i class="fas fa-book me-1"></i> Minhas Disciplinas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/aluno/historico">
+                            <i class="fas fa-history me-1"></i> Histórico
+                        </a>
+                    </li>
+                </ul>
+                <form th:action="@{/logout}" method="post" class="d-flex">
+                    <button type="submit" class="btn-logout">
+                        <i class="fas fa-sign-out-alt me-1"></i> Sair
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 container mx-auto px-4 py-8">
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-2">
+                <i data-lucide="clock" class="h-8 w-8 text-indigo-600"></i>
+                <h2 class="text-2xl font-bold text-slate-800">Histórico Acadêmico</h2>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="text-sm text-slate-500">Curso: Ciência da Computação</span>
+                <span class="bg-green-600 text-white px-2 py-1 rounded-md text-xs font-medium">Ativo</span>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-sm">
+                <div class="p-6 flex flex-col items-center justify-center">
+                    <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mb-3">
+                        <i data-lucide="award" class="h-6 w-6 text-indigo-600"></i>
+                    </div>
+                    <span class="text-4xl font-bold text-indigo-600" th:text="${#numbers.formatDecimal(cr, 1, 2)}">8.3</span>
+                    <p class="text-slate-600 text-sm">Coeficiente de Rendimento (CR)</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm">
+                <div class="p-6 flex flex-col items-center justify-center">
+                    <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mb-3">
+                        <i data-lucide="book-open" class="h-6 w-6 text-indigo-600"></i>
+                    </div>
+                    <span class="text-4xl font-bold text-indigo-600" th:text="${#lists.size(historico)}">5</span>
+                    <p class="text-slate-600 text-sm">Disciplinas Concluídas</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm">
+                <div class="p-6 flex flex-col items-center justify-center">
+                    <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mb-3">
+                        <i data-lucide="graduation-cap" class="h-6 w-6 text-indigo-600"></i>
+                    </div>
+                    <span class="text-4xl font-bold text-indigo-600" th:text="${#lists.size(historico.?[status == 'APROVADO'])}">5</span>
+                    <p class="text-slate-600 text-sm">Disciplinas Aprovadas</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="mb-8">
+            <div class="bg-indigo-100 p-1 rounded-md flex gap-1">
+                <button onclick="showTab('historico')" class="px-4 py-2 rounded-md bg-indigo-600 text-white font-medium tab-trigger" data-tab="historico">Histórico Completo</button>
+                <button onclick="showTab('semestres')" class="px-4 py-2 rounded-md text-indigo-600 hover:bg-indigo-200 font-medium tab-trigger" data-tab="semestres">Por Semestre</button>
+                <button onclick="showTab('progresso')" class="px-4 py-2 rounded-md text-indigo-600 hover:bg-indigo-200 font-medium tab-trigger" data-tab="progresso">Progresso do Curso</button>
+            </div>
+        </div>
+
+        <!-- Histórico Completo Tab -->
+        <div id="tab-historico" class="tab-content">
+            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div class="bg-indigo-600 text-white p-3 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="clock" class="h-5 w-5"></i>
+                        <h3 class="font-medium">Histórico Acadêmico</h3>
+                    </div>
+                    <button class="bg-white text-indigo-600 px-4 py-2 rounded-md text-sm font-medium hover:bg-slate-50 flex items-center gap-1 h-8">
+                        <i data-lucide="download" class="h-4 w-4 mr-1"></i>
+                        <span>Exportar PDF</span>
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-slate-50">
+                                <th class="px-4 py-3 text-left text-sm font-medium text-slate-600">DISCIPLINA</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-slate-600">SEMESTRE</th>
+                                <th class="px-4 py-3 text-center text-sm font-medium text-slate-600">NOTA 1</th>
+                                <th class="px-4 py-3 text-center text-sm font-medium text-slate-600">NOTA 2</th>
+                                <th class="px-4 py-3 text-center text-sm font-medium text-slate-600">NOTA FINAL</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-slate-600">STATUS</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-slate-600">DATA DE CONCLUSÃO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="registro : ${historico}" class="border-b border-slate-200">
+                                <td class="px-4 py-3 font-medium" th:text="${registro.disciplina.nome}">Programação Java</td>
+                                <td class="px-4 py-3" th:text="${registro.semestreAno}">2024.1</td>
+                                <td class="px-4 py-3 text-center" th:text="${#numbers.formatDecimal(registro.nota1, 1, 1)}">8,5</td>
+                                <td class="px-4 py-3 text-center" th:text="${#numbers.formatDecimal(registro.nota2, 1, 1)}">9,0</td>
+                                <td class="px-4 py-3 text-center font-medium" th:text="${#numbers.formatDecimal(registro.notaFinal, 1, 1)}">8,8</td>
+                                <td class="px-4 py-3">
+                                    <span class="bg-green-600 text-white px-2 py-1 rounded-md text-xs font-medium" 
+                                          th:text="${registro.status}">APROVADO</span>
+                                </td>
+                                <td class="px-4 py-3" th:text="${#temporals.format(registro.dataConclusao, 'dd/MM/yyyy HH:mm')}">21/03/2025 14:51</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Por Semestre Tab -->
+        <div id="tab-semestres" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div class="bg-indigo-600 text-white p-3 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="calendar" class="h-5 w-5"></i>
+                        <h3 class="font-medium">Histórico por Semestre</h3>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <select class="bg-indigo-700 text-white rounded px-3 py-1 text-sm border border-indigo-500 focus:outline-none focus:ring-2 focus:ring-white">
+                            <option value="2024.1">2024.1</option>
+                            <option value="2023.2">2023.2</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <div class="mb-6">
+                        <h4 class="text-lg font-medium text-indigo-700 mb-2">Semestre 2024.1</h4>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-sm font-medium">Média do Semestre:</span>
+                            <span class="bg-indigo-600 text-white px-2 py-1 rounded-md text-xs font-medium">8.3</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="border rounded-lg p-4">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div>
+                                        <h5 class="font-medium">Programação Java</h5>
+                                        <p class="text-sm text-slate-500">Prof. Roberto Santos</p>
+                                    </div>
+                                    <span class="bg-green-600 text-white px-2 py-1 rounded-md text-xs font-medium">APROVADO</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-4 mb-2">
+                                    <div class="text-center">
+                                        <p class="text-xs text-slate-500">NOTA 1</p>
+                                        <p class="font-medium">8,5</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-xs text-slate-500">NOTA 2</p>
+                                        <p class="font-medium">9,0</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-xs text-slate-500">NOTA FINAL</p>
+                                        <p class="font-medium">8,8</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-slate-600">Aproveitamento</span>
+                                        <span class="font-medium">88%</span>
+                                    </div>
+                                    <div class="h-2 bg-indigo-100 rounded-full">
+                                        <div class="h-2 bg-indigo-600 rounded-full" style="width: 88%"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="border rounded-lg p-4">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div>
+                                        <h5 class="font-medium">Banco de Dados</h5>
+                                        <p class="text-sm text-slate-500">Profa. Ana Oliveira</p>
+                                    </div>
+                                    <span class="bg-green-600 text-white px-2 py-1 rounded-md text-xs font-medium">APROVADO</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-4 mb-2">
+                                    <div class="text-center">
+                                        <p class="text-xs text-slate-500">NOTA 1</p>
+                                        <p class="font-medium">7,5</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-xs text-slate-500">NOTA 2</p>
+                                        <p class="font-medium">8,0</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-xs text-slate-500">NOTA FINAL</p>
+                                        <p class="font-medium">7,8</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-slate-600">Aproveitamento</span>
+                                        <span class="font-medium">78%</span>
+                                    </div>
+                                    <div class="h-2 bg-indigo-100 rounded-full">
+                                        <div class="h-2 bg-indigo-600 rounded-full" style="width: 78%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progresso do Curso Tab -->
+        <div id="tab-progresso" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div class="bg-indigo-600 text-white p-3 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="pie-chart" class="h-5 w-5"></i>
+                        <h3 class="font-medium">Progresso do Curso</h3>
+                    </div>
+                    <button class="bg-white text-indigo-600 px-4 py-2 rounded-md text-sm font-medium hover:bg-slate-50 flex items-center gap-1 h-8">
+                        <i data-lucide="file-text" class="h-4 w-4 mr-1"></i>
+                        <span>Relatório</span>
+                    </button>
+                </div>
+
+                <div class="p-6">
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-lg font-medium text-indigo-700">Ciência da Computação</h4>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-medium">Progresso Geral:</span>
+                                <span class="bg-indigo-600 text-white px-2 py-1 rounded-md text-xs font-medium">12%</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1 mb-6">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-600">Créditos Concluídos: 20 de 160</span>
+                                <span class="font-medium">12%</span>
+                            </div>
+                            <div class="h-3 bg-indigo-100 rounded-full">
+                                <div class="h-3 bg-indigo-600 rounded-full" style="width: 12%"></div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="border rounded-lg p-4">
+                                <h5 class="font-medium mb-3 text-indigo-700">Disciplinas por Área</h5>
+                                <div class="space-y-4">
+                                    <div>
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span>Programação</span>
+                                            <span>3 de 12 (25%)</span>
+                                        </div>
+                                        <div class="h-2 bg-indigo-100 rounded-full">
+                                            <div class="h-2 bg-indigo-600 rounded-full" style="width: 25%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span>Matemática</span>
+                                            <span>1 de 8 (12.5%)</span>
+                                        </div>
+                                        <div class="h-2 bg-indigo-100 rounded-full">
+                                            <div class="h-2 bg-indigo-600 rounded-full" style="width: 12.5%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span>Teoria da Computação</span>
+                                            <span>1 de 10 (10%)</span>
+                                        </div>
+                                        <div class="h-2 bg-indigo-100 rounded-full">
+                                            <div class="h-2 bg-indigo-600 rounded-full" style="width: 10%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span>Engenharia de Software</span>
+                                            <span>0 de 8 (0%)</span>
+                                        </div>
+                                        <div class="h-2 bg-indigo-100 rounded-full">
+                                            <div class="h-2 bg-indigo-600 rounded-full" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="border rounded-lg p-4">
+                                <h5 class="font-medium mb-3 text-indigo-700">Informações do Curso</h5>
+                                <div class="space-y-3 text-sm">
+                                    <div class="flex justify-between border-b pb-2">
+                                        <span class="text-slate-600">Início do Curso:</span>
+                                        <span class="font-medium">Agosto/2023</span>
+                                    </div>
+                                    <div class="flex justify-between border-b pb-2">
+                                        <span class="text-slate-600">Previsão de Conclusão:</span>
+                                        <span class="font-medium">Julho/2027</span>
+                                    </div>
+                                    <div class="flex justify-between border-b pb-2">
+                                        <span class="text-slate-600">Semestres Concluídos:</span>
+                                        <span class="font-medium">2 de 8</span>
+                                    </div>
+                                    <div class="flex justify-between border-b pb-2">
+                                        <span class="text-slate-600">Carga Horária Total:</span>
+                                        <span class="font-medium">3.200 horas</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-slate-600">Carga Horária Concluída:</span>
+                                        <span class="font-medium">400 horas (12.5%)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 text-slate-300 py-4 mt-8">
+        <div class="container mx-auto px-4 text-center text-sm">
+            © 2025 Portal do Aluno. Todos os direitos reservados.
+        </div>
+    </footer>
+
+    <script>
+        // Inicializa os ícones do Lucide
+        lucide.createIcons();
+
+        // Função para mostrar/esconder as abas
+        function showTab(tabId) {
+            // Esconde todas as abas
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Remove a classe ativa de todos os botões
+            document.querySelectorAll('.tab-trigger').forEach(button => {
+                button.classList.remove('bg-indigo-600', 'text-white');
+                button.classList.add('text-indigo-600', 'hover:bg-indigo-200');
+            });
+            
+            // Mostra a aba selecionada
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            
+            // Ativa o botão selecionado
+            const activeButton = document.querySelector(`[data-tab="${tabId}"]`);
+            activeButton.classList.remove('text-indigo-600', 'hover:bg-indigo-200');
+            activeButton.classList.add('bg-indigo-600', 'text-white');
+        }
+
+        // Mostra a primeira aba por padrão
+        document.addEventListener('DOMContentLoaded', () => {
+            showTab('historico');
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

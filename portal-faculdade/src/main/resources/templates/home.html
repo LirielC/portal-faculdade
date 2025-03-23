@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Aluno</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --background-color: #f8fafc;
+            --card-background: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+        }
+
+        body {
+            background-color: var(--background-color);
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: var(--primary-color);
+            padding: 0.75rem 0;
+        }
+
+        .navbar-brand {
+            color: white !important;
+            font-weight: 600;
+            font-size: 1.125rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .navbar-brand i {
+            font-size: 1.25rem;
+        }
+
+        .nav-link {
+            color: white !important;
+            font-weight: 500;
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem !important;
+            opacity: 0.9;
+        }
+
+        .nav-link:hover {
+            opacity: 1;
+        }
+
+        .nav-link.active {
+            opacity: 1;
+            font-weight: 600;
+        }
+
+        .btn-dashboard {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-dashboard:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .btn-sair {
+            background-color: #dc2626;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-sair:hover {
+            background-color: #b91c1c;
+            color: white;
+        }
+
+        .welcome-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 4rem 1rem;
+            text-align: center;
+        }
+
+        .welcome-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .welcome-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+
+        .student-area-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .student-area-icon {
+            width: 4rem;
+            height: 4rem;
+            background-color: #e8f0fe;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .student-area-icon i {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .student-area-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .student-area-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .btn-group-vertical {
+            width: 100%;
+            gap: 0.75rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 0.75rem 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #e2e8f0;
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-outline:hover {
+            background-color: #f8fafc;
+            border-color: #cbd5e1;
+            color: var(--text-primary);
+        }
+
+        .support-text {
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .support-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .support-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-graduation-cap"></i>
+                Portal do Aluno
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <a href="#" class="nav-link">Home</a>
+                <a href="/dashboard" class="btn btn-dashboard">
+                    <i class="fas fa-th-large"></i>
+                    Dashboard
+                </a>
+                <a href="/logout" class="btn btn-sair">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Sair
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="welcome-container">
+        <h1 class="welcome-title">Bem-vindo ao Portal do Aluno</h1>
+        <p class="welcome-subtitle">Acesse suas disciplinas, notas e materiais de estudo em um só lugar.</p>
+
+        <div class="student-area-card">
+            <div class="student-area-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <h2 class="student-area-title">Área do Aluno</h2>
+            <p class="student-area-description">
+                Acesse suas disciplinas, notas e materiais de estudo. Acompanhe seu desempenho acadêmico e 
+                fique por dentro das novidades do seu curso.
+            </p>
+            <div class="btn-group-vertical">
+                <a href="/aluno/disciplinas" class="btn btn-primary">
+                    <i class="fas fa-book"></i>
+                    Minhas Disciplinas
+                </a>
+                <a href="/dashboard" class="btn btn-outline">
+                    <i class="fas fa-th-large"></i>
+                    Meu Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="support-text">
+            Precisa de ajuda?
+            <a href="#" class="support-link">Suporte ao Aluno</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
