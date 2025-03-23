@@ -29,7 +29,7 @@ public class DataInitializer {
     @Bean
     public CommandLineRunner initData() {
         return args -> {
-            // Só cria as disciplinas se não existir nenhuma
+            
             if (disciplinaRepository.count() == 0) {
                 // Criar professores
                 Usuario profWeb = criarProfessor("Dr. João Silva", "joao.silva@faculdade.com", "PROF001");
@@ -39,7 +39,7 @@ public class DataInitializer {
                 Usuario profRedes = criarProfessor("Dr. Carlos Ferreira", "carlos.ferreira@faculdade.com", "PROF005");
                 Usuario profSO = criarProfessor("Dra. Lucia Martins", "lucia.martins@faculdade.com", "PROF006");
 
-                // Disciplina 1: Programação Web
+               
                 Disciplina programacaoWeb = new Disciplina();
                 programacaoWeb.setNome("Programação Web");
                 programacaoWeb.setDescricao("Desenvolvimento de aplicações web com Spring Boot");
@@ -51,7 +51,7 @@ public class DataInitializer {
                 programacaoWeb.setProfessor(profWeb);
                 disciplinaRepository.save(programacaoWeb);
 
-                // Disciplina 2: Banco de Dados
+                
                 Disciplina bancoDados = new Disciplina();
                 bancoDados.setNome("Banco de Dados");
                 bancoDados.setDescricao("Fundamentos de bancos de dados relacionais");
@@ -63,7 +63,7 @@ public class DataInitializer {
                 bancoDados.setProfessor(profBD);
                 disciplinaRepository.save(bancoDados);
 
-                // Disciplina 3: Algoritmos
+               
                 Disciplina algoritmos = new Disciplina();
                 algoritmos.setNome("Algoritmos e Estruturas de Dados");
                 algoritmos.setDescricao("Estudo de algoritmos e estruturas de dados fundamentais");
@@ -75,7 +75,7 @@ public class DataInitializer {
                 algoritmos.setProfessor(profAlg);
                 disciplinaRepository.save(algoritmos);
 
-                // Disciplina 4: POO
+               
                 Disciplina poo = new Disciplina();
                 poo.setNome("Programação Orientada a Objetos");
                 poo.setDescricao("Conceitos e práticas de programação orientada a objetos");
@@ -87,7 +87,6 @@ public class DataInitializer {
                 poo.setProfessor(profPOO);
                 disciplinaRepository.save(poo);
 
-                // Disciplina 5: Redes
                 Disciplina redes = new Disciplina();
                 redes.setNome("Redes de Computadores");
                 redes.setDescricao("Fundamentos de redes e protocolos de comunicação");
@@ -99,7 +98,7 @@ public class DataInitializer {
                 redes.setProfessor(profRedes);
                 disciplinaRepository.save(redes);
 
-                // Disciplina 6: Sistemas Operacionais
+                
                 Disciplina so = new Disciplina();
                 so.setNome("Sistemas Operacionais");
                 so.setDescricao("Conceitos e implementação de sistemas operacionais");
@@ -123,7 +122,7 @@ public class DataInitializer {
         professor.setTipoUsuario(TipoUsuario.PROFESSOR);
         professor.setAtivo(true);
         
-        // Define a titulação com base no prefixo do nome (Dr. ou Dra.)
+      
         if (nome.startsWith("Dr.")) {
             professor.setTitulacao("Doutor em Ciência da Computação");
         } else if (nome.startsWith("Dra.")) {
